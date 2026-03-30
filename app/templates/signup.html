@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h2>Signup</h2>
+
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="signup()">Signup</button>
+
+    <p>Already have account? <a href="/">Login</a></p>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

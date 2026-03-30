@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h2>Expense Tracker</h2>
+
+<input type="number" id="amount" placeholder="Amount">
+<input type="text" id="category" placeholder="Category">
+<input type="text" id="description" placeholder="Description">
+
+<button onclick="addExpense()">Add Expense</button>
+
+<h3>Your Expenses</h3>
+<ul id="expenseList"></ul>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+
+</body>
+</html>
