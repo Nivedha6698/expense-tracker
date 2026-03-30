@@ -16,8 +16,17 @@
 <button onclick="addExpense()">Add Expense</button>
 <button onclick="updateExpense()">Update Expense</button>
 
-<h3>Your Expenses</h3>
+<!-- EXPENSE LIST -->
+<h3>📋 Your Expenses</h3>
 <ul id="expenseList"></ul>
+<hr>
+
+<!-- EXPORT -->
+<h3>📁 Export</h3>
+<button onclick="exportCSV()">Download CSV</button>
+
+<hr>
+
 
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 

@@ -120,6 +120,44 @@ function deleteExpense(id) {
     .then(() => loadExpenses());
 }
 
+// ---------------- SUMMARY ----------------
+function loadSummary() {
+    fetch('/expenses/summary', {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        let list = document.getElementById("summaryList");
+        list.innerHTML = "";
+
+        for (let category in data) {
+            let li = document.createElement("li");
+            li.innerText = `${category} : ₹${data[category]}`;
+            list.appendChild(li);
+        }
+    });
+}
+
+// ---------------- EXPORT CSV ----------------
+function exportCSV() {
+    fetch('/expenses/export', {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
+    .then(res => res.blob())
+    .then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = "expenses.csv";
+        a.click();
+    });
+}
+
+
 // Load expenses on dashboard
 if (window.location.pathname === "/dashboard") {
     loadExpenses();
