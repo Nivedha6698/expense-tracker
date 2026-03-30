@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, render_template
 from .models import db, User, Expense
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import func
 
 main = Blueprint('main', __name__)
 
@@ -78,8 +79,14 @@ def add_expense():
 @jwt_required()
 def get_expenses():
     user_id = int(get_jwt_identity())
+    category = request.args.get('category')
 
-    expenses = Expense.query.filter_by(user_id=user_id).all()
+    query = Expense.query.filter_by(user_id=user_id)
+
+    if category:
+        query = query.filter_by(category=category)
+
+    expenses = query.all()
 
     result = []
     for e in expenses:
@@ -87,8 +94,8 @@ def get_expenses():
             "id": e.id,
             "amount": e.amount,
             "category": e.category,
-            "notes": e.notes,
-            "created_at": e.created_at.strftime("%Y-%m-%d %H:%M")
+            "notes": e.note
+            "created_at": e.created_at.strftime("%Y-%m-%d %H:%M")  
         })
 
     return jsonify(result)
@@ -109,6 +116,59 @@ def delete_expense(id):
     db.session.commit()
 
     return jsonify({"message": "Deleted"})
+
+@main.route('/expenses/<int:id>', methods=['PUT'])
+@jwt_required()
+def update_expense(id):
+    user_id = int(get_jwt_identity())
+    data = request.get_json()
+
+    expense = Expense.query.filter_by(id=id, user_id=user_id).first()
+
+    if not expense:
+        return jsonify({"message": "Not found"}), 404
+
+    expense.amount = float(data.get('amount', expense.amount))
+    expense.category = data.get('category', expense.category)
+    expense.description = data.get('description', expense.description)
+
+    db.session.commit()
+
+    return jsonify({"message": "Expense updated"})
+
+
+
+@main.route('/expenses/summary', methods=['GET'])
+@jwt_required()
+def expense_summary():
+    user_id = int(get_jwt_identity())
+
+    summary = db.session.query(
+        Expense.category,
+        func.sum(Expense.amount)
+    ).filter_by(user_id=user_id).group_by(Expense.category).all()
+
+    result = {category: total for category, total in summary}
+
+    return jsonify(result)
+
+import csv
+from flask import Response
+
+@main.route('/expenses/export', methods=['GET'])
+@jwt_required()
+def export_csv():
+    user_id = int(get_jwt_identity())
+
+    expenses = Expense.query.filter_by(user_id=user_id).all()
+
+    def generate():
+        yield 'Amount,Category,Description,Date\n'
+        for e in expenses:
+            yield f"{e.amount},{e.category},{e.description},{e.date}\n"
+
+    return Response(generate(), mimetype='text/csv',
+                    headers={"Content-Disposition": "attachment;filename=expenses.csv"})
 
 
 # ---------------- PAGES ---------------- #
