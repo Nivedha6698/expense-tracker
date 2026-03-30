@@ -67,25 +67,48 @@ function loadExpenses() {
     })
     .then(res => res.json())
     .then(data => {
-        console.log("API response:", data); // debug
-
-        if (!Array.isArray(data)) {
-            console.error("Not an array:", data);
-            return;
-        }
-
         let list = document.getElementById("expenseList");
         list.innerHTML = "";
 
         data.forEach(exp => {
             let li = document.createElement("li");
-            li.innerHTML = `${exp.amount} - ${exp.category} 
-                <button onclick="deleteExpense(${exp.id})">Delete</button>`;
+            li.innerHTML = `
+                ${exp.amount} - ${exp.category} - ${exp.notes}
+                <button onclick="editExpense(${exp.id}, '${exp.amount}', '${exp.category}', '${exp.notes}')">Edit</button>
+                <button onclick="deleteExpense(${exp.id})">Delete</button>
+            `;
             list.appendChild(li);
         });
     });
 }
+function editExpense(id, amount, category, notes) {
+    document.getElementById('expenseId').value = id;
+    document.getElementById('amount').value = amount;
+    document.getElementById('category').value = category;
+    document.getElementById('description').value = notes;
+}
 
+function updateExpense() {
+    let id = document.getElementById('expenseId').value;
+
+    fetch(`/expenses/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem("token")
+        },
+        body: JSON.stringify({
+            amount: document.getElementById('amount').value,
+            category: document.getElementById('category').value,
+            notes: document.getElementById('notes').value
+        })
+    })
+    .then(res => res.json())
+    .then(() => {
+        alert("Updated!");
+        loadExpenses();
+    });
+}
 // ---------------- DELETE ----------------
 function deleteExpense(id) {
     fetch(`/expenses/${id}`, {

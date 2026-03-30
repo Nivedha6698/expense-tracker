@@ -7,12 +7,14 @@
 <body>
 
 <h2>Expense Tracker</h2>
-
+<input type="hidden" id="expenseId">
 <input type="number" id="amount" placeholder="Amount">
 <input type="text" id="category" placeholder="Category">
-<input type="text" id="description" placeholder="Description">
+<input type="text" id="notes" placeholder="Notes">
+
 
 <button onclick="addExpense()">Add Expense</button>
+<button onclick="updateExpense()">Update Expense</button>
 
 <h3>Your Expenses</h3>
 <ul id="expenseList"></ul>
