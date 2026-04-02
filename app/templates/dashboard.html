@@ -2,33 +2,39 @@
 <html>
 <head>
     <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<h2>Expense Tracker</h2>
-<input type="hidden" id="expenseId">
-<input type="number" id="amount" placeholder="Amount">
-<input type="text" id="category" placeholder="Category">
-<input type="text" id="notes" placeholder="Notes">
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>Expense Tracker</h2>
+    <button onclick="logout()">Logout</button>
+</div>
 
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
 
-<button onclick="addExpense()">Add Expense</button>
-<button onclick="updateExpense()">Update Expense</button>
+<div class="container">
 
-<!-- EXPENSE LIST -->
-<h3>📋 Your Expenses</h3>
-<ul id="expenseList"></ul>
-<hr>
+    <input type="hidden" id="expenseId">
 
-<!-- EXPORT -->
-<h3>📁 Export</h3>
-<button onclick="exportCSV()">Download CSV</button>
+    <input id="amount" type="number" placeholder="Amount">
+    <input id="category" placeholder="Category">
+    <input id="notes" placeholder="Notes">
 
-<hr>
+    <button onclick="addExpense()">Add Expense</button>
+    <button onclick="updateExpense()">Update Expense</button>
 
+    <h3>Expenses</h3>
+    <ul id="expenseList"></ul>
+
+    <h3>Export</h3>
+    <button onclick="exportCSV()">Download CSV</button>
+
+</div>
 
 <script src="{{ url_for('static', filename='app.js') }}"></script>
-
 </body>
 </html>

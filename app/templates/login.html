@@ -2,20 +2,24 @@
 <html>
 <head>
     <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-   <div class="login-container">
-        <h1>Welcome!</h1>
-        <p>Login to your Personal Expense Tracker</p>
 
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
+<div class="container">
+    <h2>Login</h2>
 
-        <button onclick="login()">Login</button>
+    <input id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
 
-        <p>New user? <a href="/signup-page">Signup here</a></p>
-    </div>
-    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <button onclick="login()">Login</button>
+
+    <p style="text-align:center; margin-top:10px;">
+        New user? <a href="/signup-page">Signup</a>
+    </p>
+</div>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
