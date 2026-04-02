@@ -147,13 +147,13 @@ function exportCSV() {
             'Authorization': 'Bearer ' + token
         }
     })
-    .then(res => res.blob())
-    .then(blob => {
-        let url = window.URL.createObjectURL(blob);
-        let a = document.createElement('a');
-        a.href = url;
-        a.download = "expenses.csv";
-        a.click();
+    .then(res => res.json())
+    .then(data => {
+        if (data.download_url) {
+            window.open(data.download_url, '_blank'); // open S3 link
+        } else {
+            alert("Export failed");
+        }
     });
 }
 

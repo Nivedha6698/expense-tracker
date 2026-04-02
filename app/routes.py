@@ -3,6 +3,7 @@ from .models import db, User, Expense
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import func
+from app.utils import upload_csv_to_s3, generate_download_url
 
 main = Blueprint('main', __name__)
 
@@ -142,15 +143,21 @@ def export_csv():
     user_id = int(get_jwt_identity())
     expenses = Expense.query.filter_by(user_id=user_id).all()
 
-    def generate():
-        yield 'Amount,Category,Notes,Date\n'
-        for e in expenses:
-            yield f"{e.amount},{e.category},{e.notes},{e.created_at}\n"
+    # Generate CSV content as string
+    csv_data = 'Amount,Category,Notes,Date\n'
+    for e in expenses:
+        csv_data += f"{e.amount},{e.category},{e.notes},{e.created_at}\n"
 
-    return Response(generate(),
-        mimetype='text/csv',
-        headers={"Content-Disposition": "attachment;filename=expenses.csv"}
-    )
+    # Upload to S3
+    file_key = upload_csv_to_s3(csv_data, user_id)
+
+    # Generate download URL
+    download_url = generate_download_url(file_key)
+
+    return jsonify({
+        "message": "File uploaded to S3",
+        "download_url": download_url
+    })
 
 
 # ---------------- PAGES ---------------- #
