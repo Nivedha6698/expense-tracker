@@ -3,7 +3,7 @@ from .models import db, User, Expense
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import func
-from app.utils import upload_csv_to_s3, generate_download_url
+from app.utils.s3_utils import upload_csv_to_s3, generate_download_url
 
 main = Blueprint('main', __name__)
 
