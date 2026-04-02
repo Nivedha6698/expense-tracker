@@ -49,7 +49,7 @@ function addExpense() {
         body: JSON.stringify({
             amount: parseFloat(document.getElementById('amount').value),  // fix
             category: document.getElementById('category').value,
-            notes: document.getElementById('description').value
+            notes: document.getElementById('notes').value
         })
     })
     .then(res => res.json())
@@ -85,7 +85,7 @@ function editExpense(id, amount, category, notes) {
     document.getElementById('expenseId').value = id;
     document.getElementById('amount').value = amount;
     document.getElementById('category').value = category;
-    document.getElementById('description').value = notes;
+    document.getElementById('notes').value = notes;
 }
 
 function updateExpense() {
