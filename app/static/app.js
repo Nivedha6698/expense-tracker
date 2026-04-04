@@ -7,7 +7,7 @@ function getToken() {
 function showToast(message, success = true) {
     let toast = document.getElementById("toast");
 
-    if (!toast) return; // prevent error if not on dashboard
+    if (!toast) return;
 
     toast.innerText = message;
     toast.style.background = success ? "#28a745" : "#dc3545";
@@ -85,7 +85,14 @@ function addExpense() {
             notes: document.getElementById('notes').value
         })
     })
-    .then(res => res.json())
+    .then(res => {
+        if (res.status === 401) {
+            showToast("Unauthorized ❌ Please login again", false);
+            logout();
+            return;
+        }
+        return res.json();
+    })
     .then(() => {
         showToast("Expense Added ✅");
         clearFields();
@@ -101,8 +108,17 @@ function loadExpenses() {
             'Authorization': 'Bearer ' + getToken()
         }
     })
-    .then(res => res.json())
+    .then(res => {
+        if (res.status === 401) {
+            showToast("Session expired ❌", false);
+            logout();
+            return;
+        }
+        return res.json();
+    })
     .then(data => {
+        if (!data) return;
+
         let list = document.getElementById("expenseList");
         if (!list) return;
 
@@ -114,7 +130,7 @@ function loadExpenses() {
             li.innerHTML = `
                 <span>${exp.amount} - ${exp.category} - ${exp.notes}</span>
                 <div class="actions">
-                    <button onclick="editExpense(${exp.id}, '${exp.amount}', '${exp.category}', '${exp.notes}')">Edit</button>
+                    <button onclick="editExpense(${exp.id}, '${exp.amount}', '${exp.category}', \`${exp.notes}\`)">Edit</button>
                     <button onclick="deleteExpense(${exp.id})">Delete</button>
                 </div>
             `;
@@ -153,7 +169,14 @@ function updateExpense() {
             notes: document.getElementById('notes').value
         })
     })
-    .then(res => res.json())
+    .then(res => {
+        if (res.status === 401) {
+            showToast("Unauthorized ❌", false);
+            logout();
+            return;
+        }
+        return res.json();
+    })
     .then(() => {
         showToast("Updated successfully ✅");
         clearFields();
@@ -170,13 +193,19 @@ function deleteExpense(id) {
             'Authorization': 'Bearer ' + getToken()
         }
     })
+    .then(res => {
+        if (res.status === 401) {
+            showToast("Unauthorized ❌", false);
+            logout();
+            return;
+        }
+    })
     .then(() => {
         showToast("Deleted 🗑️");
         loadExpenses();
     })
     .catch(() => showToast("Delete failed ❌", false));
 }
-
 // ---------------- EXPORT CSV ----------------
 function exportCSV() {
     fetch('/expenses/export', {
@@ -184,14 +213,20 @@ function exportCSV() {
             'Authorization': 'Bearer ' + getToken()
         }
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.download_url) {
-            showToast("Download ready 📥");
-            window.open(data.download_url, '_blank');
-        } else {
-            showToast("Export failed ❌", false);
+    .then(res => {
+        if (res.status === 401) {
+            showToast("Unauthorized ❌", false);
+            logout();
+            return;
         }
+        return res.blob();
+    })
+    .then(blob => {
+        if (!blob) return;
+
+        const url = window.URL.createObjectURL(blob);
+        window.open(url);
+        showToast("Download started 📥");
     })
     .catch(() => showToast("Error exporting ❌", false));
 }
