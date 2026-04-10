@@ -3,13 +3,35 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
 import os
 from dotenv import load_dotenv
+from .config import DevConfig, TestConfig, ProdConfig
 import logging
 
 db = SQLAlchemy()
 jwt = JWTManager()
+load_dotenv()
 
+def create_app(config_name="dev"):
+    load_dotenv()
+    app = Flask(__name__)
 
-def create_app():
+    # ---------------- LOGGING ---------------- #
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s [%(levelname)s] %(message)s'
+    )
+
+    # ---------------- CONFIG SWITCH ---------------- #
+    if config_name == "test":
+        app.config.from_object(TestConfig)
+    elif config_name == "prod":
+        app.config.from_object(ProdConfig)
+    else:
+        app.config.from_object(DevConfig)
+
+    db.init_app(app)
+    jwt.init_app(app)
+
+    '''
     load_dotenv()
     app = Flask(__name__)
 
@@ -33,6 +55,7 @@ def create_app():
 
     db.init_app(app)
     jwt.init_app(app)
+    '''
 
     # ---------------- JWT ERROR HANDLING ---------------- #
     @jwt.unauthorized_loader
@@ -48,9 +71,12 @@ def create_app():
     app.register_blueprint(main)
 
     # ---------------- DB CREATE ---------------- #
-    with app.app_context():
+    '''
+        with app.app_context():
         from .models import Expense
         db.create_all()
         app.logger.info("✅ Database tables created")
+    '''
+
 
     return app
