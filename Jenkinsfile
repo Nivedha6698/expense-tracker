@@ -2,7 +2,6 @@ pipeline {
     agent {
         label 'docker'
     }
-
     triggers {
         githubPush()   // Webhook trigger
     }
@@ -18,8 +17,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'feature/add-expense',
-                    url: 'https://github.com/your-repo.git'
+                git branch: 'dev',
+                url: 'https://github.com/Nivedha6698/expense-tracker.git'
             }
         }
 
