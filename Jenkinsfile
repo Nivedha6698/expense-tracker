@@ -16,7 +16,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'dev',
-                    url: 'https://github.com/your-username/your-repo.git'
+                    url: 'https://github.com/Nivedha6698/expense-tracker.git'
             }
         }
 
