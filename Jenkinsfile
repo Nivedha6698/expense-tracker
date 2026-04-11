@@ -11,6 +11,13 @@ pipeline {
         DOCKERHUB_REPO = "nivedhajd/flask-expense-tracker"
         CONTAINER_NAME = "flask-expense-app"
         IMAGE_TAG = "v${BUILD_NUMBER}"
+
+    environment {
+        IMAGE_NAME = "flask-expense-app-dev"
+    }
+
+    triggers {
+        githubPush()
     }
 
     stages {
@@ -19,21 +26,21 @@ pipeline {
             steps {
                 git branch: 'main',
                 url: 'https://github.com/Nivedha6698/expense-tracker.git'
+                git branch: 'dev',
+                    url: 'https://github.com/your-username/your-repo.git'
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t $IMAGE_NAME .'
-            }
-        }
-
-        stage('Run Tests (SQLite Memory)') {
+        stage('Run Tests (SQLite - APP_ENV=test)') {
             steps {
                 sh '''
+                echo "Running tests with SQLite..."
+
+                docker build -t $IMAGE_NAME:test .
+
                 docker run --rm \
                     -e APP_ENV=test \
-                    $IMAGE_NAME pytest
+                    $IMAGE_NAME:test pytest
                 '''
             }
         }
@@ -48,7 +55,7 @@ pipeline {
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Build Docker Image (Dev)') {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'dockerhub-creds',
@@ -108,16 +115,21 @@ pipeline {
                     docker ps
                     '''
                 }
+                sh '''
+                echo "Building Docker image..."
+
+                docker build -t $IMAGE_NAME:latest .
+                '''
             }
         }
     }
 
     post {
         success {
-            echo "✅ Build, Test & Deployment successful!"
+            echo "✅ Dev Pipeline Successful (Build + Test Passed)"
         }
         failure {
-            echo "❌ Pipeline failed. Deployment skipped."
+            echo "❌ Dev Pipeline Failed - Fix before merging to main"
         }
     }
 }
