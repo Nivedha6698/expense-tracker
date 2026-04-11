@@ -103,8 +103,8 @@ pipeline {
 					export AWS_BUCKET_NAME=$AWS_BUCKET_NAME
 					export AWS_REGION=$AWS_REGION
 
-                    docker-compose down || true
-                    docker-compose up -d 
+                    docker compose down --remove-orphans || true
+                    docker compose up -d --build --force-recreate
 
                     docker ps
                     '''
