@@ -1,24 +1,104 @@
+\* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial;
-    margin: 40px;
-    background: #f4f4f4;
+    font-family: 'Poppins', sans-serif;
+    background: #f4f6f9;
 }
 
-input {
-    display: block;
-    margin: 10px 0;
-    padding: 10px;
-    width: 250px;
-}
-
-button {
-    padding: 10px;
-    background: blue;
+/* NAVBAR */
+.navbar {
+    background: #007bff;
     color: white;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar h2 {
+    margin: 0;
+}
+
+.navbar button {
+    width: auto;
+    padding: 8px 15px;
+    background: white;
+    color: #007bff;
+    border-radius: 5px;
+}
+
+/* CONTAINER */
+.container {
+    width: 500px;
+    max-width: 95%;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+/* INPUTS */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* BUTTONS */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #007bff;
     border: none;
+    color: white;
+    border-radius: 6px;
     cursor: pointer;
 }
 
+button:hover {
+    background: #0056b3;
+}
+
+/* EXPENSE LIST */
 ul {
-    margin-top: 20px;
+    list-style: none;
+    margin-top: 15px;
+}
+
+li {
+    background: #f1f3f6;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ACTION BUTTONS */
+.actions button {
+    width: auto;
+    padding: 5px 10px;
+    margin-left: 5px;
+    font-size: 12px;
+}
+
+/* TOAST MESSAGE */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    display: none;
 }

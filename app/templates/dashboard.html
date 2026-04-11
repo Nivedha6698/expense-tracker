@@ -2,22 +2,39 @@
 <html>
 <head>
     <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<h2>Expense Tracker</h2>
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>Expense Tracker</h2>
+    <button onclick="logout()">Logout</button>
+</div>
 
-<input type="number" id="amount" placeholder="Amount">
-<input type="text" id="category" placeholder="Category">
-<input type="text" id="description" placeholder="Description">
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
 
-<button onclick="addExpense()">Add Expense</button>
+<div class="container">
 
-<h3>Your Expenses</h3>
-<ul id="expenseList"></ul>
+    <input type="hidden" id="expenseId">
+
+    <input id="amount" type="number" placeholder="Amount">
+    <input id="category" placeholder="Category">
+    <input id="notes" placeholder="Notes">
+
+    <button onclick="addExpense()">Add Expense</button>
+    <button onclick="updateExpense()">Update Expense</button>
+
+    <h3>Expenses</h3>
+    <ul id="expenseList"></ul>
+
+    <h3>Export</h3>
+    <button onclick="exportCSV()">Download CSV</button>
+
+</div>
 
 <script src="{{ url_for('static', filename='app.js') }}"></script>
-
 </body>
 </html>
