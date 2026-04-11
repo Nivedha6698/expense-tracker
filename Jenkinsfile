@@ -59,11 +59,10 @@ pipeline {
                     echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
                     # Tagging
                     docker tag $IMAGE_NAME:latest $DOCKERHUB_REPO:latest
-                    docker tag $IMAGE_NAME:latest $DOCKERHUB_REPO:v${BUILD_NUMBER}
+    
 
                     # Pushing
                     docker push $DOCKERHUB_REPO:latest
-                    docker push $DOCKERHUB_REPO:v${BUILD_NUMBER}
                     '''
                 }
             }
