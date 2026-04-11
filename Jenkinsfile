@@ -3,7 +3,8 @@ pipeline {
         label 'docker'
     }
     triggers {
-        githubPush()   // Webhook trigger
+        githubPush() 
+        // Webhook trigger
     }
 
     environment {
