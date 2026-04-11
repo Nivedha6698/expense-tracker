@@ -12,6 +12,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+ENV PYTHONUNBUFFERED=1
+
 # Copy installed packages from builder
 COPY --from=builder /usr/local/lib/python3.11 /usr/local/lib/python3.11
 COPY --from=builder /usr/local/bin /usr/local/bin
