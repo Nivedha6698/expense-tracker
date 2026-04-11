@@ -38,6 +38,6 @@ def test_get_expenses(client):
     )
 
     assert res.status_code == 200
-    #assert isinstance(res.get_json(), list)
-
     assert isinstance(res.get_json(), list)
+
+    #assert isinstance(res.get_json(), list)
