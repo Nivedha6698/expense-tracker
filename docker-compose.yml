@@ -1,6 +1,7 @@
 services:
   flask-app:
     image: nivedhajd/flask-expense-tracker:latest
+    image: nivedhajd/flask-expense-tracker:${IMAGE_TAG} 
     container_name: flask-expense-app
     ports:
       - "5000:5000"
