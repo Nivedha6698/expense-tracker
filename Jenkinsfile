@@ -3,90 +3,54 @@ pipeline {
         label 'docker-slave'
     }
 
-    triggers {
-        githubPush()   // Webhook trigger
+    environment {
+        IMAGE_NAME = "flask-expense-app-dev"
     }
 
-    environment {
-        IMAGE_NAME = "flask-expense-app"
-        DOCKERHUB_REPO = "your-dockerhub-username/flask-expense-app"
+    triggers {
+        githubPush()
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'feature/add-expense',
-                    url: 'https://github.com/your-repo.git'
+                git branch: 'dev',
+                    url: 'https://github.com/your-username/your-repo.git'
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t $IMAGE_NAME .'
-            }
-        }
-
-        stage('Run Tests (SQLite Memory)') {
+        stage('Run Tests (SQLite - APP_ENV=test)') {
             steps {
                 sh '''
+                echo "Running tests with SQLite..."
+
+                docker build -t $IMAGE_NAME:test .
+
                 docker run --rm \
                     -e APP_ENV=test \
-                    $IMAGE_NAME pytest
+                    $IMAGE_NAME:test pytest
                 '''
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Build Docker Image (Dev)') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh '''
-                    echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                    docker tag $IMAGE_NAME $DOCKERHUB_REPO:latest
-                    docker push $DOCKERHUB_REPO:latest
-                    '''
-                }
-            }
-        }
+                sh '''
+                echo "Building Docker image..."
 
-        stage('Deploy using Docker Compose') {
-            steps {
-                withCredentials([
-                    string(credentialsId: 'db-user', variable: 'DB_USER'),
-                    string(credentialsId: 'db-pass', variable: 'DB_PASSWORD'),
-                    string(credentialsId: 'db-host', variable: 'DB_HOST'),
-                    string(credentialsId: 'db-name', variable: 'DB_NAME'),
-                    string(credentialsId: 'jwt-secret', variable: 'JWT_SECRET_KEY')
-                ]) {
-                    sh '''
-                    echo "Deploying application..."
-
-                    export DB_USER=$DB_USER
-                    export DB_PASSWORD=$DB_PASSWORD
-                    export DB_HOST=$DB_HOST
-                    export DB_NAME=$DB_NAME
-                    export JWT_SECRET_KEY=$JWT_SECRET_KEY
-
-                    docker-compose down || true
-                    docker-compose up -d --build
-
-                    docker ps
-                    '''
-                }
+                docker build -t $IMAGE_NAME:latest .
+                '''
             }
         }
     }
 
     post {
         success {
-            echo "✅ Build, Test & Deployment successful!"
+            echo "✅ Dev Pipeline Successful (Build + Test Passed)"
         }
         failure {
-            echo "❌ Pipeline failed. Deployment skipped."
+            echo "❌ Dev Pipeline Failed - Fix before merging to main"
         }
     }
 }
