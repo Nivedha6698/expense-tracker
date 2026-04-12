@@ -10,9 +10,13 @@ db = SQLAlchemy()
 jwt = JWTManager()
 load_dotenv()
 
-def create_app(config_name="dev"):
+def create_app(config_name=None):
     load_dotenv()
     app = Flask(__name__)
+
+    if config_name is None:
+        config_name = os.getenv("APP_ENV", "dev")
+
 
     # ---------------- LOGGING ---------------- #
     logging.basicConfig(
