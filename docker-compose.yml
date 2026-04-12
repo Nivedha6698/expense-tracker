@@ -6,7 +6,7 @@ services:
       - "5000:5000"
 
     environment:
-      FLASK_ENV: production
+      APP_ENV: prod
       DB_HOST: ${DB_HOST}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
