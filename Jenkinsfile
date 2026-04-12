@@ -18,7 +18,7 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: 'dev',
+                git branch: 'main',
                 url: 'https://github.com/Nivedha6698/expense-tracker.git'
             }
         }
