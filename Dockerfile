@@ -25,4 +25,5 @@ COPY . .
 EXPOSE 5000
 
 # Run with Gunicorn
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "run:app"]
+#CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:5000", "run:app"]
+CMD ["gunicorn", "--workers=1", "--timeout=120", "--bind=0.0.0.0:5000", "run:app"]

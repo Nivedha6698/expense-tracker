@@ -104,7 +104,8 @@ pipeline {
 					export AWS_REGION=$AWS_REGION
 
                     docker compose down --remove-orphans || true
-                    docker compose up -d --build --force-recreate
+                    #docker compose up -d --build --force-recreate
+                    docker compose up -d --force-recreate
 
                     docker ps
                     '''
